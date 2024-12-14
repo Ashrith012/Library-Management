@@ -1,108 +1,212 @@
-# Library Management System API
+# 📚 Library Management System API
 
-A RESTful API for managing a library system, built with Node.js, Express, and SQLite.
+A comprehensive RESTful API for managing a modern library system, built with Node.js, Express, and SQLite. This system allows libraries to manage their books, users, and borrowing processes digitally.
 
-## Features
-
-- User Authentication (JWT)
-- Role-based Access Control (Reader/Author)
-- Book Management
-- Borrowing System
-- Search and Filter Capabilities
-
-## Tech Stack
-
-- Node.js
-- Express.js
-- SQLite (with Sequelize ORM)
-- JSON Web Tokens (JWT)
-- bcryptjs for password hashing
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone [your-repository-url]
-cd library-management-system
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create a .env file in the root directory:
-```env
-PORT=8000
-JWT_SECRET=your-secret-key
-```
-
-4. Start the server:
-```bash
-npm start
-```
-
-## API Endpoints
+## 🌟 Features
 
 ### User Management
-- `POST /api/users/register` - Register new user
-- `POST /api/users/login` - Login user
-- `PUT /api/users/:id` - Update user profile
-- `DELETE /api/users/:id` - Delete user account
+- 👥 User registration and authentication
+- 🔐 JWT-based authentication
+- 👨‍👩‍👧‍👦 Role-based access control (Reader/Author)
+- 🔄 Profile management
 
 ### Book Management
-- `POST /api/books` - Create new book (Author only)
-- `GET /api/books` - Get all books
-- `GET /api/books/:id` - Get book by ID
-- `GET /api/books/author/:authorId` - Get books by author
-- `PUT /api/books/:id` - Update book (Author only)
-- `DELETE /api/books/:id` - Delete book (Author only)
+- 📖 Complete CRUD operations for books
+- 🔍 Advanced search and filtering
+- 📊 Stock management
+- 👨‍🎨 Author-specific book management
 
 ### Borrowing System
-- `POST /api/borrow/:bookId` - Borrow a book
-- `POST /api/borrow/return/:bookId` - Return a book
-- `GET /api/borrow/my-books` - Get user's currently borrowed books
-- `GET /api/borrow/history` - Get user's borrowing history
+- 📚 Borrow and return books
+- 📋 Track borrowed books
+- 📅 Borrowing history
+- ⏰ 15-day borrowing period
+- 🔢 Maximum 5 books per user limit
 
-## Authentication
+## 🛠️ Tech Stack
 
-Protected routes require a JWT token in the Authorization header:
+- **Runtime Environment**: Node.js
+- **Framework**: Express.js
+- **Database**: SQLite
+- **ORM**: Sequelize
+- **Authentication**: JSON Web Tokens (JWT)
+- **Password Security**: bcryptjs
+- **API Testing**: Postman/Curl
+
+## 📥 Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Ashrith012/Library-Management.git
+   cd Library-Management
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment**
+   Create a .env file in the root directory:
+   ```env
+   PORT=8000
+   JWT_SECRET=your-secret-key-change-this-in-production
+   ```
+
+4. **Start the Server**
+   ```bash
+   # Development mode
+   npm run dev
+
+   # Production mode
+   npm start
+   ```
+
+## 🔗 API Endpoints
+
+### 👤 User Management
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/users/register` | Register new user | No |
+| POST | `/api/users/login` | Login user | No |
+| PUT | `/api/users/:id` | Update user profile | Yes |
+| DELETE | `/api/users/:id` | Delete user account | Yes |
+
+### 📚 Book Management
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/books` | Create new book | Yes (Author) |
+| GET | `/api/books` | Get all books | No |
+| GET | `/api/books/:id` | Get book by ID | No |
+| GET | `/api/books/author/:authorId` | Get books by author | No |
+| PUT | `/api/books/:id` | Update book | Yes (Author) |
+| DELETE | `/api/books/:id` | Delete book | Yes (Author) |
+
+### 📖 Borrowing System
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/borrow/:bookId` | Borrow a book | Yes (Reader) |
+| POST | `/api/borrow/return/:bookId` | Return a book | Yes (Reader) |
+| GET | `/api/borrow/my-books` | Get borrowed books | Yes (Reader) |
+| GET | `/api/borrow/history` | Get borrowing history | Yes (Reader) |
+
+## 🔒 Authentication
+
+For protected routes, include the JWT token in the Authorization header:
+```http
+Authorization: Bearer <your-jwt-token>
 ```
-Authorization: Bearer [your-jwt-token]
+
+## 👥 User Roles & Permissions
+
+### 📖 Reader
+- Can borrow up to 5 books at a time
+- View and search available books
+- Track personal borrowing history
+- Update own profile
+
+### ✍️ Author
+- Create and manage own books
+- Update book information
+- Track book availability
+- View reader statistics
+
+## 💾 Database Schema
+
+### Users Table
+- id (Primary Key)
+- name
+- email (Unique)
+- password (Hashed)
+- role (reader/author)
+- createdAt
+- updatedAt
+
+### Books Table
+- id (Primary Key)
+- title
+- author (Foreign Key)
+- genre
+- stock
+- createdAt
+- updatedAt
+
+### BorrowedBooks Table
+- id (Primary Key)
+- userId (Foreign Key)
+- bookId (Foreign Key)
+- borrowDate
+- returnDate
+- createdAt
+- updatedAt
+
+## 🔍 API Testing
+
+### Using Curl
+```bash
+# Register a new user
+curl -X POST http://localhost:8000/api/users/register \
+-H "Content-Type: application/json" \
+-d '{"name":"John Doe","email":"john@example.com","password":"password123","role":"reader"}'
+
+# Login
+curl -X POST http://localhost:8000/api/users/login \
+-H "Content-Type: application/json" \
+-d '{"email":"john@example.com","password":"password123"}'
 ```
 
-## User Roles
+### Using Postman
+1. Import the provided Postman collection
+2. Set up environment variables
+3. Use the pre-configured requests
 
-1. Reader:
-   - Can borrow up to 5 books
-   - Can view and search books
-   - Can view their borrowing history
+## 🛡️ Error Handling
 
-2. Author:
-   - Can create, update, and delete their books
-   - Can view their published books
-
-## Database
-
-The system uses SQLite with Sequelize ORM. The database file (database.sqlite) will be created automatically when you start the server.
-
-## Error Handling
-
-The API includes comprehensive error handling for:
+The API implements comprehensive error handling for:
 - Invalid requests
 - Authentication errors
 - Authorization errors
-- Database errors
+- Database constraints
 - Validation errors
 
-## Contributing
+## 🚀 Deployment
+
+1. **Prepare Your Environment**
+   - Set up production environment variables
+   - Configure your database
+   - Set up proper security measures
+
+2. **Deploy to Your Server**
+   ```bash
+   # Install production dependencies
+   npm install --production
+
+   # Start the server
+   npm start
+   ```
+
+## 👨‍💻 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
+## 📝 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+For support, email your-email@example.com or create an issue in the repository.
+
+## 🙏 Acknowledgments
+
+- Node.js community
+- Express.js team
+- Sequelize team
+- All contributors
+
+---
+Made with ❤️ by [Your Name]
